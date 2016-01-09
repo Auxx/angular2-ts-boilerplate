@@ -7,7 +7,9 @@ module.exports = {
     'entry': {
         'app': 'boot.ts', // Application entry point is boot.ts as per Angular2 best practises.
 
-        'styles': [], // CSS entry point.
+        'styles': [ // CSS entry point.
+            'styles.less'
+        ],
 
         'vendor': [ // Vendor entry point, this allows us to separate 3rd party dependencies from app code.
             'reflect-metadata',
