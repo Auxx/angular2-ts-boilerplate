@@ -44,7 +44,7 @@ module.exports = {
     'resolve': {
         'root': [
             path.join(__dirname, 'src/app'),     // JS code goes here.
-            path.join(__dirname, 'src/less'),    // Styles go here.
+            path.join(__dirname, 'src/styles'),    // Styles go here.
             path.join(__dirname, 'src/images'),  // Images go here.
             path.join(__dirname, 'src/static'),  // Static files go here.
             path.join(__dirname, 'node_modules') // 3rd party dependencies are managed by npm.
