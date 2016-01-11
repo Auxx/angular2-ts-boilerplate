@@ -70,5 +70,11 @@ module.exports = {
             'template': 'src/static/index.html',
             'inject': 'body'
         })
-    ]
+    ],
+    
+    'lessLoader': {
+        'lessPlugins': [
+            require('less-plugin-glob')
+        ]
+    }
 }
