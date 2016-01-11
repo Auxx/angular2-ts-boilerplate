@@ -28,7 +28,7 @@ module.exports = {
             {'test': /\.ts$/,   'loader': 'ts' },
             // All styles should be exported as a stand-alone CSS files, not embedded in JS.
             {'test': /\.css$/,  'loader': extractTextPlugin.extract('style', 'css')},
-            {'test': /\.less$/, 'loader': extractTextPlugin.extract('style', 'css!less')},
+            {'test': /\.less$/, 'loader': extractTextPlugin.extract('style', 'css!less?root=true')},
             // Small PNG and GIF images should be embedded in CSS as data URI sprites.
             {'test': /\.png$/,  'loader': 'url', 'query': {'limit': 8192, 'mimetype': 'image/png'}},
             {'test': /\.gif$/,  'loader': 'url', 'query': {'limit': 8192, 'mimetype': 'image/png'}},
