@@ -3,7 +3,7 @@ import {HelloComponent} from 'hello/hello.component';
 
 @Component({
     selector: 'app',
-    template: require('app.component.html'),
+    template: require('app/app.component.html'),
     directives: [HelloComponent]
 })
 export class AppComponent { }
