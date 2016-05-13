@@ -1,80 +1,111 @@
-var path = require('path'),
-    webpack = require('webpack'),
-    extractTextPlugin = require("extract-text-webpack-plugin"),
-    htmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const LessPluginGlob = require('less-plugin-glob');
 
-module.exports = {
+const allowedEnvironments = [
+    'dev', 'prod', 'test'
+];
+
+var argv = require('yargs').argv,
+    ENV = argv.hasOwnProperty('ENV') ? argv.ENV : allowedEnvironments[0],
+    envConfig;
+
+if(allowedEnvironments.indexOf(ENV) < 0) {
+    ENV = allowedEnvironments[0];
+}
+
+envConfig = require('./webpack.' + ENV + '.js');
+
+var config = {
     'entry': {
-        'app': 'boot.ts', // Application entry point is boot.ts as per Angular2 best practises.
-
-        'styles': [ // CSS entry point.
-            'styles.less'
+        'app': [
+            'boot.ts'
         ],
 
-        'vendor': [ // Vendor entry point, this allows us to separate 3rd party dependencies from app code.
-            'reflect-metadata',
-            'angular2/core',
-            'angular2/platform/browser'
+        'styles': [ // CSS entry point.
+            'main.less'
+        ],
+
+        'vendor': [
+            'es6-shim',
+            'rxjs',
+            'zone.js',
+            'reflect-metadata'
         ]
     },
 
     'output': {
-        'path': path.join(__dirname, 'build/webpack'),
-        'filename': '[name].js'
-    },
-
-    'module': {
-        'loaders': [ // Loaders for most used file types.
-            {'test': /\.ts$/,   'loader': 'ts' },
-            // All styles should be exported as a stand-alone CSS files, not embedded in JS.
-            {'test': /\.css$/,  'loader': extractTextPlugin.extract('style', 'css')},
-            {'test': /\.less$/, 'loader': extractTextPlugin.extract('style', 'css!less?root=true')},
-            // Small PNG and GIF images should be embedded in CSS as data URI sprites.
-            {'test': /\.png$/,  'loader': 'url', 'query': {'limit': 8192, 'mimetype': 'image/png'}},
-            {'test': /\.gif$/,  'loader': 'url', 'query': {'limit': 8192, 'mimetype': 'image/png'}},
-            // HTML files are used as templates and should be cached inside JS.
-            {'test': /\.html$/, 'loader': 'html'},
-            // All other files should be copied into static folder as is (Gulp does the copying of static assets).
-            {'test': /\.jpg$/,  'loader': 'file'},
-            {'test': /\.eot$/,  'loader': 'file'},
-            {'test': /\.woff$/, 'loader': 'file'},
-            {'test': /\.ttf$/,  'loader': 'file'},
-            {'test': /\.svg$/,  'loader': 'file'}
-        ]
+        'path'      : path.join(__dirname, 'build', ENV),
+        'filename'  : '[name].js'
     },
 
     'resolve': {
+        'extensions': ['', '.webpack.js', '.web.js', '.js', '.ts'],
         'root': [
-            path.join(__dirname, 'src/app'),     // JS code goes here.
-            path.join(__dirname, 'src/styles'),    // Styles go here.
-            path.join(__dirname, 'src/images'),  // Images go here.
-            path.join(__dirname, 'src/static'),  // Static files go here.
-            path.join(__dirname, 'node_modules') // 3rd party dependencies are managed by npm.
+            path.join(__dirname, 'src/app'),
+            path.join(__dirname, 'src/styles'),
         ],
-        'extensions': ['', '.webpack.js', '.web.js', '.js', '.ts'] // Adding .ts to a list of default file extensions.
-    },
-
-    'resolveLoader': { // This configuration tells webpack where to search for tools during build process
-        'root': [
+        'modulesDirectories': [
             path.join(__dirname, 'node_modules')
         ]
     },
 
-    'plugins': [ // Plugin configuration
+    'module': {
+        'preLoaders': [
+            {
+                'test'   : /\.ts$/,
+                'loader' : 'tslint-loader',
+                'exclude': [
+                    path.join(__dirname, 'node_modules')
+                ]
+            }
+        ],
+
+        'loaders': [
+            {'test': /\.ts$/,   'loader': 'awesome-typescript-loader', 'exclude': [/\.(spec|e2e)\.ts$/]},
+            {'test': /\.json$/, 'loader': 'json-loader'},
+            {'test': /\.png$/,  'loader': 'url', 'query': {'limit': 8192, 'mimetype': 'image/png'}},
+            {'test': /\.jpg$/,  'loader': 'file'},
+            {'test': /\.gif$/,  'loader': 'file'},
+            {'test': /\.eot$/,  'loader': 'file'},
+            {'test': /\.woff$/, 'loader': 'file'},
+            {'test': /\.woff2$/,'loader': 'file'},
+            {'test': /\.ttf$/,  'loader': 'file'},
+            {'test': /\.svg$/,  'loader': 'file'},
+            {'test': /\.html$/, 'loader': 'raw'}
+        ]
+    },
+
+    'plugins': [
         new webpack.optimize.CommonsChunkPlugin('vendor', '[name].js'),
-        new extractTextPlugin('[name].css'),
-        // If you change auto-generated file names from simple names to hashes etc, then htmlWebpackPlugin
-        // will generate correct HTML with all the links for you.
-        new htmlWebpackPlugin({
+
+        new ExtractTextPlugin('[name].css'),
+
+        new ForkCheckerPlugin(),
+
+        new CopyWebpackPlugin.default([{
+            'from': 'src/assets',
+            'to'  : 'assets'
+        }]),
+
+        new HtmlWebpackPlugin({
             'filename': 'index.html',
-            'template': 'src/static/index.html',
+            'template': 'src/app/index.html',
             'inject': 'body'
         })
     ],
-    
+
     'lessLoader': {
         'lessPlugins': [
-            require('less-plugin-glob')
+            LessPluginGlob
         ]
     }
-}
+};
+
+envConfig(config);
+
+module.exports = config;
