@@ -1,38 +1,49 @@
 {
   "name": "angular2-ts-boilerplate",
-  "version": "0.0.1",
-  "description": "",
-  "private": true,
+  "version": "1.0.0",
+  "description": "A boilerplate for Angular 2 applications with TypeScript, LESS and WebPack",
+  "author": "Aleksandr 'Aux' Ivanov <aux@hexmode.org>",
+  "homepage": "http://hexmode.org",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --config webpack.config.js --progress --profile --colors --display-error-details --display-cached --ENV=prod",
+    "build:dev": "webpack --config webpack.config.js --progress --profile --colors --display-error-details --display-cached --ENV=dev",
+    "build:test": "webpack --config webpack.config.js --progress --profile --colors --display-error-details --display-cached --ENV=test",
+    "server:dev": "webpack-dev-server --content-base build/dev/ --hot --inline"
   },
-  "devDependencies": {
-    "css-loader": "^0.23.1",
-    "del": "^2.2.0",
-    "extract-text-webpack-plugin": "^1.0.1",
-    "file-loader": "^0.8.5",
-    "gulp": "^3.9.0",
-    "gulp-util": "^3.0.7",
-    "html-loader": "^0.4.0",
-    "html-webpack-plugin": "^2.7.2",
-    "less": "^2.6.0",
-    "less-loader": "^2.2.2",
-    "less-plugin-glob": "^1.1.1",
-    "raw-loader": "^0.5.1",
-    "style-loader": "^0.13.0",
-    "ts-loader": "^0.8.0",
-    "tsd": "^0.6.5",
-    "typescript": "^1.7.5",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.12.12",
-    "webpack-dev-server": "^1.14.1"
+  "engines": {
+    "node": ">= 4.4.4",
+    "npm": ">= 3"
   },
   "dependencies": {
-    "angular2": "^2.0.0-beta.2",
-    "es6-shim": "^0.33.3",
+    "angular2": "2.0.0-beta.17",
+    "systemjs": "0.19.27",
+    "es6-shim": "^0.35.0",
     "reflect-metadata": "^0.1.2",
-    "rxjs": "^5.0.0-beta.0",
-    "systemjs": "^0.19.18",
-    "zone.js": "^0.5.10"
+    "rxjs": "5.0.0-beta.6",
+    "zone.js": "~0.6.12"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "~0.17.0",
+    "copy-webpack-plugin": "^2.1.4",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "html-webpack-plugin": "^2.16.1",
+    "json-loader": "^0.5.4",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "less-plugin-glob": "^1.1.1",
+    "raw-loader": "0.5.1",
+    "style-loader": "^0.13.1",
+    "tslint": "^3.9.0",
+    "tslint-loader": "^2.1.4",
+    "typedoc": "^0.3.12",
+    "typescript": "~1.8.10",
+    "typings": "^0.8.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1",
+    "yargs": "^4.7.0"
   }
 }
